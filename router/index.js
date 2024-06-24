@@ -5,13 +5,13 @@ const router = require("express").Router();
 const jwt = require("../middlewares/jwt");
 
 // Import des controllers
-const { mainController, authController, accountController  } = require ('../controllers');
+const { mainController, authController, accountController, transactionController, testController  } = require ('../controllers');
 
 
 // * MAINCONTROLLER (page d'accueil de l'API)
 router.get("/", mainController.homePage);
 
-// * AUTHCONTROLLER
+// * AUTH CONTROLLER
 router.post("/signup", authController.signup);
 router.post("/login", authController.login);
 
@@ -22,12 +22,18 @@ router.patch("/user/updatePassword/:userId", jwt, authController.updatePassword)
 
 router.delete("/user/delete/:userId", jwt, authController.deleteOneUser);
 
-// * ACCOUNTCONTROLLER
+// * ACCOUNT CONTROLLER
 router.post("/user/:userId/addAccount", jwt, accountController.addAccount);
 
+// * TRANSACTION CONTROLLER
+router.post("/account/:id/addIncome", jwt, transactionController.addIncome);
 
 
 
+
+
+// * Test apres seed
+router.get("/test", testController.test);
 
 module.exports = router;
 

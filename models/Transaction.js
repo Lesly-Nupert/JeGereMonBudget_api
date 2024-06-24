@@ -37,10 +37,6 @@ module.exports = (sequelize, DataTypes) => {
     account_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      validate: {
-        isInt: true,
-        foreignKey: true
-      }
     },
   }, {
     sequelize,
