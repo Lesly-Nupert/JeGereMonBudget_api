@@ -19,6 +19,31 @@ const transactionController = {
         }
     },
 
+    // Modifier un revenu
+    updateIncome: async (req, res) => {
+        try {
+            const accountId = req.params.id;
+            const updateIncome = {
+                amount: sanitizeHtml(req.body.amount),
+                name: sanitizeHtml(req.body.name),
+                type: 'revenus',
+            };
+
+            await Transaction.update(updateIncome, { where: { id: accountId } });
+            res
+                .status(200)
+                .json({ message: "Revenu mis à jour avec succès" });
+        } catch (error) {
+            console.error(error);
+            res
+                .status(500)
+                .json({
+                    error: "Erreur serveur lors de la mise à jour du revenu",
+                });
+        }
+    },
+
+
     // Créer une dépense
     addExpense: async (req, res) => {
         try {
@@ -34,7 +59,6 @@ const transactionController = {
             res.status(500).json({ error: "Erreur serveur" });
         }
     },
-
 };
 
 module.exports = transactionController;
