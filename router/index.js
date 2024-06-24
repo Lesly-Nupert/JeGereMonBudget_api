@@ -1,14 +1,14 @@
 // Import du routeur Express
 const router = require("express").Router();
 
-// MIDDLEWARE AUTHENTIFICATION JWT
+// Import du middleware JWT
 const jwt = require("../middlewares/jwt");
 
-// * LES CONTROLEURS
-const { mainController, userController, authController  } = require ('../controllers');
-    
-// * LES ROUTES
-// mainController
+// Import des controllers
+const { mainController, authController, accountController  } = require ('../controllers');
+
+
+// * MAINCONTROLLER (page d'accueil de l'API)
 router.get("/", mainController.homePage);
 
 // * AUTHCONTROLLER
@@ -22,11 +22,21 @@ router.patch("/user/updatePassword/:userId", jwt, authController.updatePassword)
 
 router.delete("/user/delete/:userId", jwt, authController.deleteOneUser);
 
+// * ACCOUNTCONTROLLER
+router.post("/user/:userId/addAccount", jwt, accountController.addAccount);
 
 
-// userController
-router.get("/users", userController.showAllUsers);
 
 
 
 module.exports = router;
+
+
+
+
+
+
+
+
+
+
