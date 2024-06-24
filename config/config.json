@@ -1,12 +1,3 @@
-// J'ai eu un message d'erreur avec cette indication "use_env_variable"  en utilisant cette syntaxe :
-// "development": {
-//     "username": "root",
-//     "password": null,
-//     "database": "database_development",
-//     "host": "127.0.0.1",
-//     "dialect": "postgres"
-//   },
-// Après recherche sur Stackoverflow, j'ai trouvé une solution qui consiste à utiliser "use_env_variable" et à définir la variable d'environnement de la BDD du fichier .env + le dialecte de la BDD.
 {
   "development": {
     "use_env_variable": "DATABASE_URL_LOCAL",
