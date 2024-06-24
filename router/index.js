@@ -27,6 +27,7 @@ router.post("/user/:userId/addAccount", jwt, accountController.addAccount);
 
 // * TRANSACTION CONTROLLER
 router.post("/account/:id/addIncome", jwt, transactionController.addIncome);
+router.post("/account/:id/addExpense", jwt, transactionController.addExpense);
 
 
 
@@ -36,6 +37,8 @@ router.post("/account/:id/addIncome", jwt, transactionController.addIncome);
 router.get("/test", testController.test);
 
 module.exports = router;
+
+
 
 
 

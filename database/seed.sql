@@ -13,5 +13,5 @@ VALUES
 INSERT INTO "transaction" ("amount", "name", "type", "account_id")
 VALUES
   (1000.00, 'Salaire', 'revenus', 1),
-  (50.00, 'Courses', 'dépenses', 2);
+  (50.00, 'Courses', 'depenses', 2);
 

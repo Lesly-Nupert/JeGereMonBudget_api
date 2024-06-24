@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        isIn: [['revenus', 'dépenses']]
+        isIn: [['revenus', 'depenses']]
       }
     },
     account_id: {
