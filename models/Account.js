@@ -1,0 +1,48 @@
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class Account extends Model {
+    // Méthode d'aide pour définir des associations (associate)
+    // Cette méthode ne fait pas partie du cycle de vie de Sequelize.
+    // Le fichier `models/index` appellera cette méthode automatiquement.
+    static associate(models) {
+      // Définir les associations ici
+      // Un compte appartient à un utilisateur
+      Account.belongsTo(models.User, {
+        foreignKey: 'user_id',
+        as: 'users'
+      });
+      // Un compte peut avoir plusieurs transactions
+      Account.hasMany(models.Transaction, {
+        foreignKey: 'account_id',
+        as: 'transactions'
+      });
+    }
+  }
+  Account.init({
+    name:{ 
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: [3, 30]
+      }},
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        isInt: true,
+        foreignKey: true
+      }
+    },  
+  }, {
+    sequelize,
+    underscored: true,
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+    modelName: 'Account',
+    tableName: 'account'
+  });
+  return Account;
+};
