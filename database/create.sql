@@ -24,7 +24,7 @@ CREATE TABLE "transaction" (
   "id" smallint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   "amount" numeric(10, 2) NOT NULL,
   "name" varchar(30) NOT NULL,
-  "type" varchar(10) NOT NULL CHECK (type IN ('revenus', 'dépenses')),
+  "type" varchar(10) NOT NULL CHECK (type IN ('revenus', 'depenses')),
   "account_id" smallint NOT NULL REFERENCES "account" ("id") ON DELETE CASCADE,
   "created_at" timestamptz NOT NULL DEFAULT now(),
   "updated_at" timestamptz
