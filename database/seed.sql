@@ -6,7 +6,9 @@ VALUES
 INSERT INTO "account" ("name", "user_id")
 VALUES
   ('Account1', 1), 
-  ('Account2', 2); 
+  ('Account2', 2),
+  ('Account3', 1),
+  ('Account4', 2); 
 
 INSERT INTO "transaction" ("amount", "name", "type", "account_id")
 VALUES
