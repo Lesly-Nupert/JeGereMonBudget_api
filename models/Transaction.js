@@ -12,17 +12,13 @@ module.exports = (sequelize, DataTypes) => {
       // Une transaction appartient à un compte
       Transaction.belongsTo(models.Account, {
         foreignKey: 'account_id',
-        as: 'accounts'
+        as: 'accounts',
+        onDelete: 'CASCADE'
       });
       // Une transaction appartient à un utilisateur
       Transaction.belongsTo(models.User, {
         foreignKey: 'user_id',
-        as: 'users'
-      });
-      // Transactions supprimées si le compte est supprimé
-      Transaction.belongsTo(models.Account, {
-        foreignKey: 'account_id',
-        as: 'transactions',
+        as: 'users',
         onDelete: 'CASCADE'
       });
     }
