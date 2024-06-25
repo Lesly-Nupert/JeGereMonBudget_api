@@ -25,6 +25,14 @@ router.delete("/user/delete/:userId", jwt, authController.deleteOneUser);
 // * ACCOUNT CONTROLLER
 router.post("/user/:userId/addAccount", jwt, accountController.addAccount);
 
+router.patch("/user/:userId/account/:accountId/updateAccount", jwt, accountController.updateAccount);
+
+router.delete("/user/:userId/account/:accountId/deleteAccount", jwt, accountController.deleteAccountWithTansactions);
+
+router.get("/user/:userId/account/:accountId", jwt, accountController.getOneAccountWithTransactions);
+
+router.get("/user/:userId/allAccountsNames", jwt, accountController.getAllAccountsNames);
+
 
 // * TRANSACTION CONTROLLER
 // * Revenus
