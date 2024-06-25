@@ -7,7 +7,7 @@ const accountController = {
     addAccount: async (req, res) => {
         try {
             const newAccount = await Account.create({
-                name: sanitizeHtml(req.body.name),
+                account_name: sanitizeHtml(req.body.account_name),
                 user_id: req.user.userId,
             });
             res.status(201).json(newAccount);
@@ -16,6 +16,8 @@ const accountController = {
             res.status(500).json({ error: "Erreur serveur" });
         }
     },
+
+
 
 };
 
