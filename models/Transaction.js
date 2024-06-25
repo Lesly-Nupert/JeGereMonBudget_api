@@ -9,30 +9,41 @@ module.exports = (sequelize, DataTypes) => {
     // Le fichier `models/index` appellera cette méthode automatiquement.
     static associate(models) {
       // Définir les associations ici
+      // Une transaction appartient à un compte
       Transaction.belongsTo(models.Account, {
         foreignKey: 'account_id',
         as: 'accounts'
       });
+      // Une transaction appartient à un utilisateur
+      Transaction.belongsTo(models.User, {
+        foreignKey: 'user_id',
+        as: 'users'
+      });
     }
   }
   Transaction.init({
-    amount: {
-      type: DataTypes.DECIMAL(10, 2),  
-      allowNull: false,
-    },
-    name: {
+    transaction_name: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
         len: [3, 50]
       }
     },
+    amount: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+    },
+
     type: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
         isIn: [['revenus', 'depenses']]
       }
+    },
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     account_id: {
       type: DataTypes.INTEGER,

@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Account.init({
-    name:{ 
+    account_name:{ 
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
