@@ -180,11 +180,10 @@ const authController = {
     }
   },
 
-  // * SUPPRESSION D'UN UTILISATEUR
-  deleteOneUser: async (req, res) => {
+  // * SUPPRESSION D'UN UTILISATEUR AVEC SES COMPTES ET SES TRANSACTIONS (delete on cascade)
+  deleteUserWithAccountsAndTransactions: async (req, res) => {
     try {
         const user = await User.findByPk(req.params.userId);
-              console.log(user);
               if (!user) {
                   return res.status(404).json("Utilisateur non trouvé");
               } else {

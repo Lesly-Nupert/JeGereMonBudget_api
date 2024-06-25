@@ -20,7 +20,7 @@ router.patch("/user/update/:userId", jwt, authController.updateOneUser);
 
 router.patch("/user/updatePassword/:userId", jwt, authController.updatePassword);
 
-router.delete("/user/delete/:userId", jwt, authController.deleteOneUser);
+router.delete("/user/delete/:userId", jwt, authController.deleteUserWithAccountsAndTransactions);
 
 // * ACCOUNT CONTROLLER
 router.post("/user/:userId/addAccount", jwt, accountController.addAccount);
