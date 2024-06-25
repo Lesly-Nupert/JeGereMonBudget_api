@@ -17,7 +17,8 @@ module.exports = (sequelize, DataTypes) => {
       // Un compte peut avoir plusieurs transactions
       Account.hasMany(models.Transaction, {
         foreignKey: 'account_id',
-        as: 'transactions'
+        as: 'transactions',
+        onDelete: 'CASCADE'
       });
     }
   }

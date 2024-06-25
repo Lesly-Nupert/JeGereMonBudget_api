@@ -12,8 +12,10 @@ module.exports = (sequelize, DataTypes) => {
       // Un utilisateur peut avoir plusieurs comptes
       User.hasMany(models.Account, {
         foreignKey: 'user_id',
-        as: 'accounts'
+        as: 'accounts',
+        onDelete: 'CASCADE'
       });
+      
     }
   }
   User.init({

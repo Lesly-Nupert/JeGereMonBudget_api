@@ -19,6 +19,12 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'user_id',
         as: 'users'
       });
+      // Transactions supprimées si le compte est supprimé
+      Transaction.belongsTo(models.Account, {
+        foreignKey: 'account_id',
+        as: 'transactions',
+        onDelete: 'CASCADE'
+      });
     }
   }
   Transaction.init({
