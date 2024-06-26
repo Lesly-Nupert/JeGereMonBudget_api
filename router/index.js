@@ -36,20 +36,20 @@ router.get("/user/:userId/allAccountsNames", jwt, accountController.getAllAccoun
 
 // * TRANSACTION CONTROLLER
 // * Revenus
-router.post("/user/:userId/account/:id/addIncome", jwt, transactionController.addIncome);
+router.post("/user/:userId/account/:id/addIncome", jwt, transactionController.addIncomeAndIncrementAccountBalance);
 
-router.patch("/user/:userId/account/:accountId/transaction/:transactionId/updateIncome", jwt, transactionController.updateIncome);
+router.patch("/user/:userId/account/:accountId/transaction/:transactionId/updateIncome", jwt, transactionController.updateIncomeAndIncrementAccountBalance);
 
-router.delete("/user/:userId/account/:accountId/transaction/:transactionId/deleteIncome", jwt, transactionController.deleteIncome);
+router.delete("/user/:userId/account/:accountId/transaction/:transactionId/deleteIncome", jwt, transactionController.deleteIncomeAndDecrementAccountBalance);
 
 router.get("/user/:userId/account/:accountId/transaction/:transactionId/oneIncome", jwt, transactionController.getOneIncome);
 
 // * Depenses
-router.post("/user/:userId/account/:id/addExpense", jwt, transactionController.addExpense);
+router.post("/user/:userId/account/:id/addExpense", jwt, transactionController.addExpenseAndIncrementAccountBalance);
 
-router.patch("/user/:userId/account/:accountId/transaction/:transactionId/updateExpense", jwt, transactionController.updateExpense);
+router.patch("/user/:userId/account/:accountId/transaction/:transactionId/updateExpense", jwt, transactionController.updateExpenseAndIncrementAccountBalance);
 
-router.delete("/user/:userId/account/:accountId/transaction/:transactionId/deleteExpense", jwt, transactionController.deleteExpense);
+router.delete("/user/:userId/account/:accountId/transaction/:transactionId/deleteExpense", jwt, transactionController.deleteExpenseAndDecrementAccountBalance);
 
 router.get("/user/:userId/account/:accountId/transaction/:transactionId/oneExpense", jwt, transactionController.getOneExpense);
 
