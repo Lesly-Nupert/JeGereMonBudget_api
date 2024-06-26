@@ -15,6 +15,10 @@ const transactionController = {
                 user_id: req.user.userId,
                 account_id: req.params.id,
             });
+            if (!newIncome) {
+                res.status(400).json({ error: "Impossible de créer le revenu" });
+                return;
+            }
             // Met à jour le solde du compte
             await Account.increment('balance', {
                 by: newIncome.amount,
@@ -177,6 +181,10 @@ const transactionController = {
                 user_id: req.user.userId,
                 account_id: req.params.id,
             });
+            if (!newExpense) {
+                res.status(400).json({ error: "Impossible de créer la dépense" });
+                return;
+            }
             // Met à jour le solde du compte
             await Account.increment('balance', {
                 by: newExpense.amount,
@@ -198,7 +206,7 @@ const transactionController = {
             const userId = req.user.userId;
             const accountId = req.params.accountId;
             const transactionId = req.params.transactionId
-            const updateExpense = {
+            const updateIncome = {
                 transaction_name: sanitizeHtml(req.body.transaction_name),
                 amount: sanitizeHtml(req.body.amount),
                 type: 'depenses',
@@ -213,20 +221,19 @@ const transactionController = {
                 },
             });
             if (!transaction) {
-                res.status(404).json({ error: "Dépense non trouvée" });
-                
-
-                // Met à jour le solde du compte en retirant l'ancien montant
+                return res.status(404).json({ error: "Dépense non trouvée" });
+            }
+    
+            // Met à jour le solde du compte en retirant l'ancien montant
             await Account.increment('balance', {
                 by: -transaction.amount,
                 where: {
                     id: accountId,
                 },
             });
-
-            }
+    
             // Met à jour la dépense
-            await Transaction.update(updateExpense,
+            await Transaction.update(updateIncome,
                 {
                     where: {
                         id: transactionId,
@@ -237,14 +244,14 @@ const transactionController = {
                 });
             // Met à jour le solde du compte
             await Account.increment('balance', {
-                by: updateExpense.amount,
+                by: updateIncome.amount,
                 where: {
                     id: accountId,
                 },
             });
             res
                 .status(200)
-                .json({ message: "Dépense mise à jour avec succès" });
+                .json({ message: "Dépense mis à jour avec succès" });
         } catch (error) {
             console.error(error);
             res
