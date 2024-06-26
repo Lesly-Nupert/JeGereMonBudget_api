@@ -5,8 +5,8 @@ const sanitizeHtml = require('sanitize-html');
 const transactionController = {
     // ! REVENUS
 
-    // * Créer un revenu
-    addIncome: async (req, res) => {
+    // * Créé un revenu et met à jour le solde du compte
+    addIncomeAndIncrementAccountBalance: async (req, res) => {
         try {
             const newIncome = await Transaction.create({
                 transaction_name: sanitizeHtml(req.body.transaction_name),
@@ -15,6 +15,14 @@ const transactionController = {
                 user_id: req.user.userId,
                 account_id: req.params.id,
             });
+            // Met à jour le solde du compte
+            await Account.increment('balance', {
+                by: newIncome.amount,
+                where: {
+                    id: req.params.id,
+                },
+            });
+
             res.status(201).json(newIncome);
         } catch (error) {
             console.error(error);
@@ -22,8 +30,8 @@ const transactionController = {
         }
     },
 
-    // * Modifier un revenu 
-    updateIncome: async (req, res) => {
+    // * Modifier un revenu et mettre à jour le solde du compte
+    updateIncomeAndIncrementAccountBalance: async (req, res) => {
         try {
             const userId = req.user.userId;
             const accountId = req.params.accountId;
@@ -43,9 +51,17 @@ const transactionController = {
                 },
             });
             if (!transaction) {
-                res.status(404).json({ error: "Revenu non trouvé" });
-                return;
+                return res.status(404).json({ error: "Revenu non trouvé" });
             }
+
+            // Met à jour le solde du compte en retirant l'ancien montant
+            await Account.increment('balance', {
+                by: -transaction.amount,
+                where: {
+                    id: accountId,
+                },
+            });
+
             // Met à jour le revenu
             await Transaction.update(updateIncome,
                 {
@@ -56,6 +72,13 @@ const transactionController = {
                         type: 'revenus',
                     }
                 });
+            // Met à jour le solde du compte
+            await Account.increment('balance', {
+                by: updateIncome.amount,
+                where: {
+                    id: accountId,
+                },
+            });
             res
                 .status(200)
                 .json({ message: "Revenu mis à jour avec succès" });
@@ -70,7 +93,7 @@ const transactionController = {
     },
 
     // * Supprimer un revenu
-    deleteIncome: async (req, res) => {
+    deleteIncomeAndDecrementAccountBalance: async (req, res) => {
         try {
             const userId = req.user.userId;
             const accountId = req.params.accountId;
@@ -85,6 +108,14 @@ const transactionController = {
                     type: type,
                 },
             });
+            // Met à jour le solde du compte
+            await Account.decrement('balance', {
+                by: transaction.amount,
+                where: {
+                    id: accountId,
+                },
+            });
+
             if (!transaction) {
                 res.status(404).json({ error: "Revenu non trouvé" });
                 return;
@@ -137,7 +168,7 @@ const transactionController = {
     // ! DEPENSES
 
     // * Créer une dépense
-    addExpense: async (req, res) => {
+    addExpenseAndIncrementAccountBalance: async (req, res) => {
         try {
             const newExpense = await Transaction.create({
                 transaction_name: sanitizeHtml(req.body.transaction_name),
@@ -146,6 +177,14 @@ const transactionController = {
                 user_id: req.user.userId,
                 account_id: req.params.id,
             });
+            // Met à jour le solde du compte
+            await Account.increment('balance', {
+                by: newExpense.amount,
+                where: {
+                    id: req.params.id,
+                },
+            });
+
             res.status(201).json(newExpense);
         } catch (error) {
             console.error(error);
@@ -154,7 +193,7 @@ const transactionController = {
     },
 
     // * Modifier une dépense
-    updateExpense: async (req, res) => {
+    updateExpenseAndIncrementAccountBalance: async (req, res) => {
         try {
             const userId = req.user.userId;
             const accountId = req.params.accountId;
@@ -175,7 +214,16 @@ const transactionController = {
             });
             if (!transaction) {
                 res.status(404).json({ error: "Dépense non trouvée" });
-                return;
+                
+
+                // Met à jour le solde du compte en retirant l'ancien montant
+            await Account.increment('balance', {
+                by: -transaction.amount,
+                where: {
+                    id: accountId,
+                },
+            });
+
             }
             // Met à jour la dépense
             await Transaction.update(updateExpense,
@@ -187,6 +235,13 @@ const transactionController = {
                         type: 'depenses',
                     }
                 });
+            // Met à jour le solde du compte
+            await Account.increment('balance', {
+                by: updateExpense.amount,
+                where: {
+                    id: accountId,
+                },
+            });
             res
                 .status(200)
                 .json({ message: "Dépense mise à jour avec succès" });
@@ -200,8 +255,8 @@ const transactionController = {
         }
     },
 
-    // * Supprimer une dépense
-    deleteExpense: async (req, res) => {
+    // * Supprimer une dépense et mettre à jour le solde du compte
+    deleteExpenseAndDecrementAccountBalance: async (req, res) => {
         try {
             const userId = req.user.userId;
             const accountId = req.params.accountId;
@@ -220,6 +275,14 @@ const transactionController = {
                 res.status(404).json({ error: "Dépense non trouvée" });
                 return;
             }
+            // Met à jour le solde du compte
+            await Account.decrement('balance', {
+                by: transaction.amount,
+                where: {
+                    id: accountId,
+                },
+            });
+
             await Transaction.destroy({
                 where: {
                     id: transactionId,
@@ -266,13 +329,6 @@ const transactionController = {
     },
 
 
-
-
-
-
-
-
-    
 };
 
 module.exports = transactionController;
