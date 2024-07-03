@@ -1,4 +1,4 @@
-const { User } = require('../models');
+const { User, Account, Transaction } = require('../models');
 const emailValidator = require("email-validator");
 // Bibliothque qui hache les mots de passe
 const bcrypt = require("bcryptjs");
@@ -9,47 +9,48 @@ const jwt = require("jsonwebtoken");
 const sanitizeHtml = require('sanitize-html');
 
 const authController = {
-    // * INSCRIPTION 
-    signup: async (req, res) => {
-        try {
-            const username = sanitizeHtml(req.body.username);
-            const email = sanitizeHtml(req.body.email);
-            const password = req.body.password;
-            const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,12}$/;
-            
-            if (!emailValidator.validate(email)) {
-              return res.status(400).json({ error: "Adresse email invalide." });
-            }
-      
-            if (!username) {
-              return res.status(400).json({ error: "Le nom d'utilisateur est obligatoire." });
-            }
-      
-            if (!password) {
-              return res
-                .status(400)
-                .json({ error: "Le mot de passe est obligatoire." });
-            }
-      
-            if (!passwordRegex.test(password)) {
-              return res
-                .status(400)
-                .json({
-                  error:
-                    "Le mot de passe doit contenir entre 8 et 12 caractères, avec au moins une lettre majuscule, un chiffre et un caractère spécial",
-                });
-            }
-            const hashedPassword = await bcrypt.hash(password, salt);
-            await User.create({ username, email, password: hashedPassword });
-      
-            res.status(201).json({ message: "Inscription validée !" });
-          } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: "Erreur serveur" });
-          }
-        },
+  // * INSCRIPTION 
+  signup: async (req, res) => {
+    try {
+      const username = sanitizeHtml(req.body.username);
+      const email = sanitizeHtml(req.body.email);
+      const password = req.body.password;
+      const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,12}$/;
 
-    // * CONNEXION 
+      if (!emailValidator.validate(email)) {
+        return res.status(400).json({ error: "Adresse email invalide." });
+      }
+
+      if (!username) {
+        return res.status(400).json({ error: "Le nom d'utilisateur est obligatoire." });
+      }
+
+      if (!password) {
+        return res
+          .status(400)
+          .json({ error: "Le mot de passe est obligatoire." });
+      }
+
+      if (!passwordRegex.test(password)) {
+        return res
+          .status(400)
+          .json({
+            error:
+              "Le mot de passe doit contenir entre 8 et 12 caractères, avec au moins une lettre majuscule, un chiffre et un caractère spécial",
+          });
+      }
+      const hashedPassword = await bcrypt.hash(password, salt);
+      await User.create({ username, email, password: hashedPassword });
+      console.log(username, email, hashedPassword);
+
+      res.status(201).json({ message: "Inscription validée !" });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  },
+
+  // * CONNEXION 
   async login(req, res) {
     try {
       const email = sanitizeHtml(req.body.email);
@@ -78,22 +79,33 @@ const authController = {
       const user = await User.findOne({ where: { email: email } });
 
       if (!user || !(await bcrypt.compare(password, user.password))) {
-        res
-          .status(401)
-          .json({ error: "Utilisateur ou mot de passe incorrect !" });
+        res.status(401).json({ error: "Utilisateur ou mot de passe incorrect !" });
       } else {
+        // Récupère les comptes de l'utilisateur
+        const accounts = await Account.findAll({ where: { user_id: user.id } });
+
+        // Récupère les transactions de l'utilisateur
+        const transactions = await Transaction.findAll({ where: { user_id: user.id } });
+
         const token = jwt.sign(
-          { userId: user.id },
+          {
+            userId: user.id,
+            // Récupère les id des comptes et des transactions avec 
+            // la fonction map de javascript qui permet de parcourir un tableau. 
+            accountIds: accounts.map(account => account.id),
+            transactionIds: transactions.map(transaction => transaction.id),
+          },
           process.env.TOKEN_SECRET,
           { expiresIn: "24h" }
         );
-        res
-          .status(200)
-          .json({
-            message: "Connexion réussie !",
-            token,
-            userId: user.id,
-          });
+
+        res.status(200).json({
+          message: "Connexion réussie !",
+          token,
+          userId: user.id,
+          accountIds: accounts.map(account => account.id),
+          transactionIds: transactions.map(transaction => transaction.id),
+        });
       }
     } catch (error) {
       console.error(error);
@@ -122,10 +134,10 @@ const authController = {
     try {
       const userId = req.params.userId;
       const updateData = {
-        username: sanitizeHtml (req.body.username),
-        email: sanitizeHtml (req.body.email),
+        username: sanitizeHtml(req.body.username),
+        email: sanitizeHtml(req.body.email),
       };
-      
+
       await User.update(updateData, { where: { id: userId } });
       res
         .status(200)
@@ -162,7 +174,7 @@ const authController = {
               "Le mot de passe doit contenir entre 8 et 12 caractères, avec au moins une lettre majuscule, un chiffre et un caractère spécial",
           });
       }
-      
+
       const user = await User.findOne({ where: { id: userId } });
 
       if (!user || !(await bcrypt.compare(oldPassword, user.password))) {
@@ -183,18 +195,18 @@ const authController = {
   // * SUPPRESSION D'UN UTILISATEUR AVEC SES COMPTES ET SES TRANSACTIONS (delete on cascade)
   deleteUserWithAccountsAndTransactions: async (req, res) => {
     try {
-        const user = await User.findByPk(req.params.userId);
-              if (!user) {
-                  return res.status(404).json("Utilisateur non trouvé");
-              } else {
-                await User.destroy({ where: { id: req.params.userId } });
-                  res.status(200).json("Utilisateur supprimé !");
-              }
-          } catch (error) {
-              console.error(error);
-              res.status(500).json({ error: "Erreur serveur" });
-          }
-        },
+      const user = await User.findByPk(req.params.userId);
+      if (!user) {
+        return res.status(404).json("Utilisateur non trouvé");
+      } else {
+        await User.destroy({ where: { id: req.params.userId } });
+        res.status(200).json("Utilisateur supprimé !");
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  },
 };
 
 module.exports = authController;

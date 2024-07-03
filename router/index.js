@@ -31,7 +31,7 @@ router.delete("/user/:userId/account/:accountId/deleteAccount", jwt, accountCont
 
 router.get("/user/:userId/account/:accountId", jwt, accountController.getOneAccountWithTransactions);
 
-router.get("/user/:userId/allAccountsNames", jwt, accountController.getAllAccountsNames);
+router.get("/user/:userId/accounts", jwt, accountController.getAllAccountsWithTransactions);
 
 
 // * TRANSACTION CONTROLLER

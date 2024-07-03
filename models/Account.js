@@ -26,9 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     account_name:{ 
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        len: [3, 30]
-      }},
+      },
     balance: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
