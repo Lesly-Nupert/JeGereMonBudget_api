@@ -19,11 +19,11 @@ const app = express();
 app.use(helmet());
 
 // Activation de CORS pour l'URL de production
-// const corsOptions = {
-//     origin: 'https://quizinne.netlify.app',
-//     optionsSuccessStatus: 200 
-// };
-// app.use(cors(corsOptions));
+const corsOptions = {
+    origin: 'http://localhost:5173',
+    optionsSuccessStatus: 200 
+};
+app.use(cors(corsOptions));
 
 // Parse les données d'un formulaire
 // Dans insomnia et Fetch mettre le Content-Type à application x-www-form-urlencoded
@@ -38,7 +38,7 @@ app.use(router);
 
 // Port sur lequel l'appli va écouter + URL de base 
 app.set('PORT', process.env.PORT || 3000);
-app.set('URL', process.env.BASE_URL || 'http://localhost');
+app.set('URL', process.env.BASE_URL || 'http://localhost:5173');
 
 app.listen(app.get('PORT'), () => {
     console.log(`Listening on ${app.get('URL')}:${app.get('PORT')}`);
