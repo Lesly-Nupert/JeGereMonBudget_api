@@ -5,7 +5,7 @@ const router = require("express").Router();
 const jwt = require("../middlewares/jwt");
 
 // Import des controllers
-const { mainController, authController, accountController, transactionController, testController  } = require ('../controllers');
+const { mainController, authController, accountController, incomeController, expenseController, testController  } = require ('../controllers');
 
 
 // * MAINCONTROLLER (page d'accueil de l'API)
@@ -34,24 +34,24 @@ router.get("/user/:userId/account/:accountId", jwt, accountController.getOneAcco
 router.get("/user/:userId/accounts", jwt, accountController.getAllAccountsWithTransactions);
 
 
-// * TRANSACTION CONTROLLER
-// * Revenus
-router.post("/user/:userId/account/:id/addIncome", jwt, transactionController.addIncomeAndIncrementAccountBalance);
+// * INCOME CONTROLLER
+router.post("/user/:userId/account/:id/addIncome", jwt, incomeController.addIncomeAndIncrementAccountBalance);
 
-router.patch("/user/:userId/account/:accountId/transaction/:transactionId/updateIncome", jwt, transactionController.updateIncomeAndIncrementAccountBalance);
+router.patch("/user/:userId/account/:accountId/transaction/:transactionId/updateIncome", jwt, incomeController.updateIncomeAndIncrementAccountBalance);
 
-router.delete("/user/:userId/account/:accountId/transaction/:transactionId/deleteIncome", jwt, transactionController.deleteIncomeAndDecrementAccountBalance);
+router.delete("/user/:userId/account/:accountId/transaction/:transactionId/deleteIncome", jwt, incomeController.deleteIncomeAndDecrementAccountBalance);
 
-router.get("/user/:userId/account/:accountId/transaction/:transactionId/oneIncome", jwt, transactionController.getOneIncome);
+router.get("/user/:userId/account/:accountId/transaction/:transactionId/oneIncome", jwt, incomeController.getOneIncome);
 
-// * Depenses
-router.post("/user/:userId/account/:id/addExpense", jwt, transactionController.addExpenseAndIncrementAccountBalance);
 
-router.patch("/user/:userId/account/:accountId/transaction/:transactionId/updateExpense", jwt, transactionController.updateExpenseAndIncrementAccountBalance);
+// * EXPENSE CONTROLLER
+router.post("/user/:userId/account/:id/addExpense", jwt, expenseController.addExpenseAndIncrementAccountBalance);
 
-router.delete("/user/:userId/account/:accountId/transaction/:transactionId/deleteExpense", jwt, transactionController.deleteExpenseAndDecrementAccountBalance);
+router.patch("/user/:userId/account/:accountId/transaction/:transactionId/updateExpense", jwt, expenseController.updateExpenseAndIncrementAccountBalance);
 
-router.get("/user/:userId/account/:accountId/transaction/:transactionId/oneExpense", jwt, transactionController.getOneExpense);
+router.delete("/user/:userId/account/:accountId/transaction/:transactionId/deleteExpense", jwt, expenseController.deleteExpenseAndDecrementAccountBalance);
+
+router.get("/user/:userId/account/:accountId/transaction/:transactionId/oneExpense", jwt, expenseController.getOneExpense);
 
 
 
