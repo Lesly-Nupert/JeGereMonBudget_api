@@ -8,7 +8,8 @@ CREATE TABLE "user" (
   "email" varchar(100) NOT NULL UNIQUE,
   "password" varchar(255) NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT now(),
-  "updated_at" timestamptz
+  "updated_at" timestamptz,
+  CONSTRAINT username_length_check CHECK (char_length(username) BETWEEN 3 AND 30)
 );
 
 CREATE TABLE "account" (
@@ -17,7 +18,8 @@ CREATE TABLE "account" (
   "balance" numeric(10, 2) NOT NULL DEFAULT 0.00,
   "user_id" smallint NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
   "created_at" timestamptz NOT NULL DEFAULT now(),
-  "updated_at" timestamptz
+  "updated_at" timestamptz,
+  CONSTRAINT account_name_length_check CHECK (char_length(account_name) BETWEEN 3 AND 30)
 );
 
 CREATE TABLE "transaction" (
@@ -28,7 +30,8 @@ CREATE TABLE "transaction" (
   "user_id" smallint NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE,
   "account_id" smallint NOT NULL REFERENCES "account" ("id") ON DELETE CASCADE,
   "created_at" timestamptz NOT NULL DEFAULT now(),
-  "updated_at" timestamptz
+  "updated_at" timestamptz,
+  CONSTRAINT transaction_name_length_check CHECK (char_length(transaction_name) BETWEEN 3 AND 30)
   
 );
 COMMIT;

@@ -1,13 +1,15 @@
 const mainController = require ('./mainController');
 const accountController = require ('./accountController');
 const authController = require ('./authController');
-const transactionController = require ('./transactionController');
+const incomeController = require ('./incomeController');
+const expenseController = require ('./expenseController');
 const testController = require ('./testController');
 
 module.exports = {
   mainController,
   accountController,
   authController,
-  transactionController,
+  incomeController,
+  expenseController,
   testController,
 };
