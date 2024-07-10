@@ -29,6 +29,8 @@ router.patch("/user/:userId/account/:accountId/updateAccount", jwt, accountContr
 
 router.delete("/user/:userId/account/:accountId/deleteAccount", jwt, accountController.deleteAccountWithTansactions);
 
+router.get("/user/:userId/account/:accountId/oneAccount", jwt, accountController.getOneAccount);
+
 router.get("/user/:userId/account/:accountId", jwt, accountController.getOneAccountWithTransactions);
 
 router.get("/user/:userId/accounts", jwt, accountController.getAllAccountsWithTransactions);
