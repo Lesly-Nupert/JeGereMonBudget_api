@@ -135,6 +135,29 @@ const accountController = {
             res.status(500).json({ error: "Erreur serveur" });
         }
     },
+
+    // * Un compte
+    getOneAccount: async (req, res) => {
+        try {
+            const userId = req.user.userId;
+            const accountId = req.params.accountId;
+            // Vérifie si le compte existe et appartient à l'utilisateur
+            const account = await Account.findOne({
+                where: {
+                    id: accountId,
+                    user_id: userId,
+                },
+            });
+            if (!account) {
+                res.status(404).json({ error: "Compte non trouvé" });
+                return;
+            }
+            res.status(200).json(account);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: "Erreur serveur" });
+        }
+    },
 };
 
 module.exports = accountController;
