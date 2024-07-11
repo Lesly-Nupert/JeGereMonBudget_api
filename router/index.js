@@ -5,7 +5,7 @@ const router = require("express").Router();
 const jwt = require("../middlewares/jwt");
 
 // Import des controllers
-const { mainController, authController, accountController, incomeController, expenseController, testController  } = require ('../controllers');
+const { mainController, authController, accountController, incomeController, expenseController, contactController, testController  } = require ('../controllers');
 
 
 // * MAINCONTROLLER (page d'accueil de l'API)
@@ -13,9 +13,11 @@ router.get("/", mainController.homePage);
 
 // * AUTH CONTROLLER
 router.post("/signup", authController.signup);
+
 router.post("/login", authController.login);
 
 router.get("/user/:userId", jwt, authController.profileOneUser);
+
 router.patch("/user/update/:userId", jwt, authController.updateOneUser);
 
 router.patch("/user/updatePassword/:userId", jwt, authController.updatePassword);
@@ -54,6 +56,10 @@ router.patch("/user/:userId/account/:accountId/transaction/:transactionId/update
 router.delete("/user/:userId/account/:accountId/transaction/:transactionId/deleteExpense", jwt, expenseController.deleteExpenseAndDecrementAccountBalance);
 
 router.get("/user/:userId/account/:accountId/transaction/:transactionId/oneExpense", jwt, expenseController.getOneExpense);
+
+
+// * ContactController
+router.post("/contact", contactController.sendEmail);
 
 
 

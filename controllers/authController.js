@@ -184,6 +184,8 @@ const authController = {
       }
       const hashedNewPassword = await bcrypt.hash(newPassword, salt);
       await User.update({ password: hashedNewPassword }, { where: { id: userId } });
+      
+      console.log(hashedNewPassword, userId, newPassword);
 
       res.status(200).json({ message: "Mot de passe modifié avec succès." });
     } catch (error) {
