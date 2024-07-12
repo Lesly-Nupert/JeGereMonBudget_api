@@ -19,6 +19,9 @@ const incomeController = {
                 type: 'revenus',
                 user_id: req.user.userId,
                 account_id: req.params.id,
+
+                // Ajouter pour tester la date avec insomnia pour le mois d'aout sinon pas besoin
+                // created_at: req.body.created_at,
             });
 
             if (!newIncome) {
