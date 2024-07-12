@@ -2,6 +2,8 @@ const { User, Account, Transaction } = require('../models');
 // Sanitize les données pour contrer attaque XSS
 const sanitizeHtml = require('sanitize-html');
 
+const { Op } = require('sequelize');
+
 const accountController = {
     // * Créer un compte
     addAccount: async (req, res) => {
@@ -88,29 +90,65 @@ const accountController = {
         }
     },
 
-    // * Un compte avec ses transactions
+    // * Un compte avec ses transactions groupées par mois et année
     getOneAccountWithTransactions: async (req, res) => {
         try {
             const userId = req.user.userId;
             const accountId = req.params.accountId;
-            // Vérifie si le compte existe et appartient à l'utilisateur
+    
+            // Récupérer le compte avec les transactions
             const account = await Account.findOne({
                 where: {
                     id: accountId,
                     user_id: userId,
                 },
-                include: 'transactions',
+                include: [
+                    {
+                        model: Transaction,
+                        as: 'transactions'
+                    }
+                ]
             });
+    
             if (!account) {
                 res.status(404).json({ error: "Compte non trouvé" });
                 return;
             }
-            res.status(200).json(account);
+    
+            // Initialiser un objet vide pour les transactions groupées
+            const groupedTransactions = {};
+    
+            // Parcourir les transactions pour les regrouper par mois et année
+            for (const transaction of account.transactions) {
+                // Récupérer la date de la transaction
+                const date = new Date(transaction.created_at);
+                //  Créer une clé pour le mois et l'année (ex: 2021-07)
+                // En Js le mois commence à 0 donc +1
+                // .slice(-2) permet de formater le mois sur 2 chiffres (ex: 07)
+                const monthYear = `${('0' + (date.getMonth() + 1)).slice(-2)}-${date.getFullYear()}`;
+    
+                // Initialiser le tableau pour le mois/année s'il n'existe pas
+                if (!groupedTransactions[monthYear]) {
+                    groupedTransactions[monthYear] = [];
+                }
+                // Ajouter la transaction au groupe
+                groupedTransactions[monthYear].push(transaction);
+            }
+            // Création de l'objet final à renvoyer au client
+            const result = {
+                id: account.id,
+                account_name: account.account_name,
+                balance: account.balance,
+                transactions: groupedTransactions
+            };
+        
+            res.status(200).json(result);
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: "Erreur serveur" });
         }
     },
+    
 
     // * Tous les comptes d'un utilisateur avec les transactions 
     getAllAccountsWithTransactions: async (req, res) => {
