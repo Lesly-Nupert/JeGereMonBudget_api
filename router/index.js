@@ -61,10 +61,6 @@ router.get("/user/:userId/account/:accountId/transaction/:transactionId/oneExpen
 // * ContactController
 router.post("/contact", contactController.sendEmail);
 
-
-// * Test apres seed
-// router.get("/test", testController.test);
-
 module.exports = router;
 
 

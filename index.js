@@ -20,7 +20,7 @@ app.use(helmet());
 
 // Activation de CORS pour l'URL de production
 const corsOptions = {
-    origin: 'http://localhost:5173',
+    origin: 'https://jegeremonbudget.netlify.app',
     optionsSuccessStatus: 200 
 };
 app.use(cors(corsOptions));
@@ -38,7 +38,7 @@ app.use(router);
 
 // Port sur lequel l'appli va écouter + URL de base 
 app.set('PORT', process.env.PORT || 3000);
-app.set('URL', process.env.BASE_URL || 'http://localhost:5173');
+app.set('URL', process.env.BASE_URL || 'https://jegeremonbudgetapi-production.up.railway.app/');
 
 app.listen(app.get('PORT'), () => {
     console.log(`Listening on ${app.get('URL')}:${app.get('PORT')}`);

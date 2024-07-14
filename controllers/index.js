@@ -4,7 +4,6 @@ const authController = require ('./authController');
 const incomeController = require ('./incomeController');
 const expenseController = require ('./expenseController');
 const contactController = require ('./contactController');
-// const testController = require ('./testController');
 
 module.exports = {
   mainController,
@@ -13,5 +12,4 @@ module.exports = {
   incomeController,
   expenseController,
   contactController,
-  // testController,
 };

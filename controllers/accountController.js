@@ -10,7 +10,7 @@ const accountController = {
         try {
             const account_name = sanitizeHtml(req.body.account_name);
             if (!account_name) {
-                return res.status(400).json({ error: "Le nom du compte est obligatoire." });
+                return res.status(400).json({ error: "Le nom du compte est obligatoire" });
             }
             const newAccount = await Account.create({
                 account_name,
@@ -95,7 +95,7 @@ const accountController = {
         try {
             const userId = req.user.userId;
             const accountId = req.params.accountId;
-    
+
             // Récupérer le compte avec les transactions
             const account = await Account.findOne({
                 where: {
@@ -107,17 +107,21 @@ const accountController = {
                         model: Transaction,
                         as: 'transactions'
                     }
+                ],
+                // Trier les transactions par date de création (du plus récent au plus ancien)
+                order: [
+                    [{ model: Transaction, as: 'transactions' }, 'created_at', 'DESC']
                 ]
             });
-    
+
             if (!account) {
                 res.status(404).json({ error: "Compte non trouvé" });
                 return;
             }
-    
+
             // Initialiser un objet vide pour les transactions groupées
             const groupedTransactions = {};
-    
+
             // Parcourir les transactions pour les regrouper par mois et année
             for (const transaction of account.transactions) {
                 // Récupérer la date de la transaction
@@ -126,7 +130,7 @@ const accountController = {
                 // En Js le mois commence à 0 donc +1
                 // .slice(-2) permet de formater le mois sur 2 chiffres (ex: 07)
                 const monthYear = `${('0' + (date.getMonth() + 1)).slice(-2)}-${date.getFullYear()}`;
-    
+
                 // Initialiser le tableau pour le mois/année s'il n'existe pas
                 if (!groupedTransactions[monthYear]) {
                     groupedTransactions[monthYear] = [];
@@ -141,27 +145,27 @@ const accountController = {
                 balance: account.balance,
                 transactions: groupedTransactions
             };
-        
+
             res.status(200).json(result);
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: "Erreur serveur" });
         }
     },
-    
+
 
     // * Tous les comptes d'un utilisateur avec les transactions 
     getAllAccountsWithTransactions: async (req, res) => {
         try {
             const userId = req.user.userId;
- 
+
             const accounts = await Account.findAll({
                 where: {
                     user_id: userId,
                 },
                 include: 'accounts',
                 include: 'transactions',
-                
+
             });
             if (!accounts) {
                 res.status(404).json({ error: "Comptes non trouvés" });
