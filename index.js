@@ -38,7 +38,7 @@ app.use(router);
 
 // Port sur lequel l'appli va écouter + URL de base 
 app.set('PORT', process.env.PORT || 8080);
-app.set('URL', process.env.BASE_URL || 'https://jegeremonbudgetapi-production.up.railway.app/');
+app.set('URL', process.env.BASE_URL_PROD || 'https://jegeremonbudgetapi.up.railway.app/');
 
 app.listen(app.get('PORT'), () => {
     console.log(`Listening on ${app.get('URL')}:${app.get('PORT')}`);
