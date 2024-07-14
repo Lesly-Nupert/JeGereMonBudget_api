@@ -37,7 +37,7 @@ const router = require('./router');
 app.use(router); 
 
 // Port sur lequel l'appli va écouter + URL de base 
-app.set('PORT', process.env.PORT || 3000);
+app.set('PORT', process.env.PORT || 8080);
 app.set('URL', process.env.BASE_URL || 'https://jegeremonbudgetapi-production.up.railway.app/');
 
 app.listen(app.get('PORT'), () => {
