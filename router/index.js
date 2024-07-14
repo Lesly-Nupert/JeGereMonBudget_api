@@ -5,7 +5,7 @@ const router = require("express").Router();
 const jwt = require("../middlewares/jwt");
 
 // Import des controllers
-const { mainController, authController, accountController, incomeController, expenseController, contactController, testController  } = require ('../controllers');
+const { mainController, authController, accountController, incomeController, expenseController, contactController  } = require ('../controllers');
 
 
 // * MAINCONTROLLER (page d'accueil de l'API)
@@ -60,20 +60,6 @@ router.get("/user/:userId/account/:accountId/transaction/:transactionId/oneExpen
 
 // * ContactController
 router.post("/contact", contactController.sendEmail);
-
-
-
-
-
-
-
-
-
-
-
-
-// * Test apres seed
-router.get("/test", testController.test);
 
 module.exports = router;
 

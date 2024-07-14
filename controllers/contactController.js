@@ -39,7 +39,7 @@ const sendEmail = (req, res) => {
         to: process.env.RECEIVER_EMAIL_PROD,
         // L'adresse e-mail de l'expéditeur est ajoutée à la réponse
         replyTo: email,
-        subject: `Message formulaire de contact du Portfolio`,
+        subject: `Message formulaire de contact de MonBudget`,
         text: message
     };
     transporter.sendMail(mailOptions, (error, info) => {
