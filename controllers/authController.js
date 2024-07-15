@@ -250,7 +250,7 @@ const authController = {
         from: process.env.EMAIL_USER_PROD,
         to: email,
         subject: `Réinitialisation du mot de passe de mon compte JeGereMonBudget`,
-        text: `Cliquez sur ce lien pour réinitialiser votre mot de passe: ${process.env.BASE_URL_PROD}resetPassword/${token}`
+        text: `Cliquez sur ce lien pour réinitialiser votre mot de passe: ${process.env.BASE_URL_PROD}/resetPassword/${token}`
       };
 
       transporter.sendMail(mailOptions, (error, info) => {
