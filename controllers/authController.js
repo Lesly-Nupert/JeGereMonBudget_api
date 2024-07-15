@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { User, Account, Transaction } = require('../models');
 const nodemailer = require('nodemailer');
 const emailValidator = require("email-validator");
@@ -252,6 +253,9 @@ const authController = {
         subject: `Réinitialisation du mot de passe de mon compte JeGereMonBudget`,
         text: `Cliquez sur ce lien pour réinitialiser votre mot de passe: ${process.env.BASE_URL_PROD}/resetPassword/${token}`
       };
+
+      console.log('BASE_URL_PROD:', process.env.BASE_URL_PROD);
+
 
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
