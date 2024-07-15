@@ -267,7 +267,7 @@ const authController = {
     }
   },
 
-  // * REINITIALISATION DU MOT DE PASSE
+  // * REINITIALISATION DU MOT DE PASS
   resetPassword: async (req, res) => {
     try {
       const resetToken = req.params.resetToken;
