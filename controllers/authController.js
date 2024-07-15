@@ -1,4 +1,5 @@
 const { User, Account, Transaction } = require('../models');
+const nodemailer = require('nodemailer');
 const emailValidator = require("email-validator");
 // Bibliothque qui hache les mots de passe
 const bcrypt = require("bcryptjs");
@@ -96,7 +97,7 @@ const authController = {
             transactionIds: transactions.map(transaction => transaction.id),
           },
           process.env.TOKEN_SECRET,
-          { expiresIn: "24h" }
+          { expiresIn: "1h" }
         );
 
         res.status(200).json({
@@ -209,6 +210,96 @@ const authController = {
       res.status(500).json({ error: "Erreur serveur" });
     }
   },
+
+  // * MOT DE PASSE OUBLIE
+  forgotPassword: async (req, res) => {
+    try {
+      const email = sanitizeHtml(req.body.email);
+
+      if (!emailValidator.validate(email)) {
+        return res.status(400).json({ error: "Adresse email invalide." });
+      }
+
+      const user = await User.findOne({ where: { email: email } });
+
+      if (!user) {
+        return res.status(404).json({ error: "Utilisateur non trouvé." });
+      }
+
+      const token = jwt.sign(
+        { userId: user.id },
+        process.env.TOKEN_SECRET,
+        { expiresIn: "1h" }
+      );
+
+      // Configurer le transporteur Nodemailer
+      let transporter = nodemailer.createTransport({
+        host: 'smtp.zoho.eu',
+        port: 465,
+        secure: true,
+        auth: {
+          user: process.env.EMAIL_USER_PROD,
+          pass: process.env.EMAIL_PASS_PROD
+        },
+        tls: {
+          rejectUnauthorized: false
+        }
+      });
+
+      let mailOptions = {
+        from: process.env.EMAIL_USER_PROD,
+        to: email,
+        subject: `Réinitialisation du mot de passe de mon compte JeGereMonBudget`,
+        text: `Cliquez sur ce lien pour réinitialiser votre mot de passe: ${process.env.BASE_URL_PROD}/reset-password/${token}`
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.log("Erreur lors de l'envoi de l'email: ", error);
+          return res.status(500).json("Erreur lors de l'envoi de l'email: " + error.message);
+        }
+        console.log('Email envoyé avec succès: ' + info.response);
+        res.json('Email envoyé avec succès!');
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  },
+
+  // * REINITIALISATION DU MOT DE PASSE
+  resetPassword: async (req, res) => {
+    try {
+      const resetToken = req.params.resetToken;
+      const { userId } = jwt.verify(resetToken, process.env.TOKEN_SECRET);
+      const newPassword = req.body.newPassword;
+      const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,12}$/;
+
+      if (!newPassword) {
+        return res
+          .status(400)
+          .json({ error: "Le mot de passe est obligatoire." });
+      }
+
+      if (!passwordRegex.test(newPassword)) {
+        return res
+          .status(400)
+          .json({
+            error:
+              "Le mot de passe doit contenir entre 8 et 12 caractères, avec au moins une lettre majuscule, un chiffre et un caractère spécial",
+          });
+      }
+
+      const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+      await User.update({ password: hashedNewPassword }, { where: { id: userId } });
+
+      res.status(200).json({ message: "Mot de passe réinitialisé avec succès." });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  },
+
 };
 
 module.exports = authController;

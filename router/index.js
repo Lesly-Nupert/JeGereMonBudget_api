@@ -24,6 +24,10 @@ router.patch("/user/updatePassword/:userId", jwt, authController.updatePassword)
 
 router.delete("/user/delete/:userId", jwt, authController.deleteUserWithAccountsAndTransactions);
 
+router.post("/forgotPassword", authController.forgotPassword);
+
+router.patch("/resetPassword/:resetToken", authController.resetPassword);
+
 // * ACCOUNT CONTROLLER
 router.post("/user/:userId/addAccount", jwt, accountController.addAccount);
 
