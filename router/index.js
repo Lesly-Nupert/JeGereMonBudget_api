@@ -26,6 +26,12 @@ router.delete("/user/delete/:userId", jwt, authController.deleteUserWithAccounts
 
 router.post("/forgotPassword", authController.forgotPassword);
 
+router.get("/resetPassword/:resetToken", (req, res) => {
+    const { resetToken } = req.params;
+    res.redirect(`${process.env.CLIENT_URL}/resetPassword/${resetToken}`);
+  });
+  
+
 router.patch("/resetPassword/:resetToken", authController.resetPassword);
 
 // * ACCOUNT CONTROLLER
