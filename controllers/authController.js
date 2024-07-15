@@ -271,6 +271,7 @@ const authController = {
   resetPassword: async (req, res) => {
     try {
       const resetToken = req.params.resetToken;
+      // Vérifie si le token est valide et récupère l'id de l'utilisateur 
       const { userId } = jwt.verify(resetToken, process.env.TOKEN_SECRET);
       const newPassword = req.body.newPassword;
       const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*\W).{8,12}$/;

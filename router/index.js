@@ -26,12 +26,12 @@ router.delete("/user/delete/:userId", jwt, authController.deleteUserWithAccounts
 
 router.post("/forgotPassword", authController.forgotPassword);
 
+// Route pour rediriger l'utilisateur vers la page de réinitialisation du mot de passe
 router.get("/resetPassword/:resetToken", (req, res) => {
     const { resetToken } = req.params;
     res.redirect(`${process.env.CLIENT_URL}/#/resetPassword/${resetToken}`);
   });
   
-
 router.patch("/resetPassword/:resetToken", authController.resetPassword);
 
 // * ACCOUNT CONTROLLER
